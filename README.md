@@ -37,30 +37,71 @@ Furthermore, it will need to install `Splinter`, a tool that automates our web b
 
 Finally, it will need to install `ChromeDriver`, which enables automation in the Chrome browser. To do so, it will need to follow the [directions](https://splinter.readthedocs.io/en/latest/install/external.html) according with your operating system.
 
-## Analyze and Explore the Climate Data
+## Mars News. How does it work?
 
-It was used the files (`climate_starter.ipynb` and `hawaii.sqlite`) to complete your climate analysis and data exploration.
+The goal of this project is to use a script to extract the headlines and preview the text of the news articles it extracted and save the data to a JSON file.
 
-To complete this part of the exercise, the `SQLAlchemy` module is used, which is part of a Python library that is used to work with relational databases in a more efficient and readable way. As you can see below:
-
-```
-import sqlalchemy
-from sqlalchemy.ext.automap import automap_base
-from sqlalchemy.orm import Session
-from sqlalchemy import create_engine, func, inspect
+The first step is to import the libraries. To run this script, it will need `Splinter` to write web browser automation scripts, `Beautiful Soup`  that is for pulling data out of HTML.
 
 ```
-Below you will find the explanation of the functions that were used from the sqlalchemy module.
+from splinter import Browser
+from bs4 import BeautifulSoup as soup
+import json
+```
+Launch a Chrome web browser:
 
-* `automap_base`: This is a part of SQLAlchemy's Object Relational Mapping (ORM) system. It provides a way to automatically map database tables to Python classes.
-* `Session`: The Session class is part of SQLAlchemy's ORM system as well. It represents a workspace for your database operations. You create a session when you want to interact with the database, and it keeps track of changes and transactions.
-* `create_engine`: This function is used to create a database engine. The engine serves as the foundation for interacting with the database. It establishes a connection to the database and manages database connections and transactions.
-* `func`: The func module allows you to use SQL functions in your SQLAlchemy queries. This is especially useful when you need to perform calculations or aggregate data within your queries.
-* `inspect`: The inspect module is used to inspect database objects, such as tables, and gather information about them. It can be helpful when you need to dynamically query and analyze the database structure.
+```
+browser = Browser('chrome')
+```
+Visit the Mars news website:
 
-If you want to know more about SQLAlchemy you can use the following [documentation](https://docs.sqlalchemy.org/en/20/).
+```
+url = 'https://static.bc-edx.com/data/web/mars_news/index.html'
+browser.visit(url)
+html = browser.html
+```
+A Beautiful Soup object is created and used to extract text elements from the website.
 
-## Design Your Climate App
+```
+text_soup = soup(html, 'html.parser')
+```
+```
+texts = text_soup.find_all('div', class_='list_text')
+```
+Finally, the headlines are extracted and the text of the news articles is previewed. And the scraping results are stored in a JSON file. To do so, it will do the following steps:
+
+Create an empty list to store the dictionaries:
+
+```
+text_list=[]
+```
+Loop through the text elements and extract the title and preview text from the elements:
+```
+for t in texts:
+    title = t.find(class_='content_title').text.strip()
+    preview = t.find(class_='article_teaser_body').text.strip()
+```
+Store each title and preview pair in a dictionary
+```
+    dict = {
+        'title': title,
+        'preview': preview
+    }
+```
+Add the dictionary to the list
+```
+    text_list.append(dict)
+```
+Save and print the scraped data to a JSON file:
+```
+with open('./Outputs/mars_news_list.json', 'w') as file:
+    json.dump(text_list, file, indent=3)
+    
+json_list = json.dumps(text_list, indent=3)
+print(json_list)
+```
+
+## Mars Weather
 
 You will design a Flask API based on the queries you just developed. To do so, use Flask to create your routes as follows:
 
