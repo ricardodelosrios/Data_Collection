@@ -20,11 +20,22 @@ In this project, two exercises related to web scraping will be carried out. Whic
     
 ## Installation
 
-To install:
+To run this program you will need to install the following tools to explore and scrape websites, run the following command in the terminal:
 
-SQLite reads and writes directly to ordinary disk files, which can in turn be stored on a computer’s hard drive. This makes it much easier to use to perform tests and share between users. If you do not have SQLite installed, run the following code within your terminal: 
+it will need to install the `Beautiful Soup` library along with a parser like `lxml` and `html5lib`. You can install these libraries using pip:
+```diff
++ pip install beautifulsoup4
++ pip install lxml
++ pip install html5lib
+```
 
-`conda install -c anaconda sqlite`
+Furthermore, it will need to install `Splinter`, a tool that automates our web browser actions, which allows it to automatically scan and repeat interactions on websites.
+
+```diff
++ pip install "splinter[selenium4]"
+```
+
+Finally, it will need to install `ChromeDriver`, which enables automation in the Chrome browser. To do so, it will need to follow the [directions](https://splinter.readthedocs.io/en/latest/install/external.html) according with your operating system.
 
 ## Analyze and Explore the Climate Data
 
