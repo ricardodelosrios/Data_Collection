@@ -41,7 +41,7 @@ Finally, it will need to install `ChromeDriver`, which enables automation in the
 
 The goal of this project is to use a script to extract the headlines and preview the text of the news articles it extracted and save the data to a JSON file.
 
-The first step is to import the libraries. To run this script, it will need `Splinter` to write web browser automation scripts, `Beautiful Soup`  that is for pulling data out of HTML.
+The first step is to import the libraries. To run this script, it will need `Splinter` to write web browser automation scripts, `Beautiful Soup`  that is for pulling data out of HTML, and it will use `Json` to export a file.
 
 ```
 from splinter import Browser
@@ -101,23 +101,54 @@ json_list = json.dumps(text_list, indent=3)
 print(json_list)
 ```
 
-## Mars Weather
+## Mars Weather. How does it work?
 
-You will design a Flask API based on the queries you just developed. To do so, use Flask to create your routes as follows:
+The goal of this project is to use a script to analyze Mars weather data and export the DataFrame to a CSV file.
 
-1. `/`
-   * Start at the homepage.
-   * List all the available routes.
+This project imports the libraries and then launches a Chrome web browser, after which, visits the Mars Facts website.
 
-2. `/api/v1.0/precipitation`
-   *Convert the query results from your precipitation analysis (i.e. retrieve only the last 12 months of data) to a dictionary using date as the key and prcp as the value.
-   *Return the JSON representation of your dictionary
+Then, Create a Beautiful Soup object and use it to scrape the data in the HTML table, and extract all rows of data.
 
-3. `/api/v1.0/stations`
-   *Return a JSON list of stations from the dataset.
+To store the data, it creates an empty list, traverses the extracted data to create a list of rows, identifies and prints headers, and stores other rows as data values.
 
-4. `/api/v1.0/tobs`
-   * Query the dates and temperature observations of the most-active station for the previous year of data.
-   * Return a JSON list of temperature observations for the previous year.
-  
-5. `/api/v1.0/<start>` and `/api/v1.0/<start>/<end>`
+```
+# Create an empty list
+mars_temperature= []
+# Loop through the scraped data to create a list of rows
+for row in rows:
+    #identify and print headers
+    th = row.find_all('th')
+    if th:
+        headers = [h.text for h in th]
+        print(headers)
+    
+    # Store other rows as data values
+    else:
+        td = row.find_all('td')
+        values = [v.text for v in td]
+        mars_temperature.append(values)
+```
+Create a Pandas DataFrame by using the list of rows and a list of the column names and print it.
+
+```
+df = pd.DataFrame(mars_temperature, columns=headers)
+mars_table
+```
+Finally, it will answer the following questions:
+
+1. How many months exist on Mars?
+2. How many Martian (and not Earth) days worth of data exist in the scraped dataset?
+3. What are the coldest and the warmest months on Mars (at the location of Curiosity)? To answer this question:
+   * Find the average the minimum daily temperature for all of the months.
+   * Plot the results as a bar chart.
+4. Which months have the lowest and the highest atmospheric pressure on Mars? To answer this question:
+   * Find the average the daily atmospheric pressure of all the months.
+   * Plot the results as a bar chart.
+5. About how many terrestrial (Earth) days exist in a Martian year? To answer this question:
+   * Consider how many days elapse on Earth in the time that Mars circles the Sun once.
+   * Visually estimate the result by plotting the daily minimum temperature.
+
+
+
+
+
